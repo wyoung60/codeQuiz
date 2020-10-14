@@ -10,61 +10,88 @@ function startTimer() {
     $("#timeDisplay").text(totalTime);
   }, 1000);
 }
-// var startButton = document.querySelector("#startButton");
-// console.log(startButton);
-// startButton.addEventListener("click", function () {
-//   startTimer();
-//   startButton.setAttribute("style", "width:500px");
-// });
 
 $("#startButton").click(function () {
-  startTimer();
+  setInterval(function () {
+    totalTime--;
+    $("#timeDisplay").text(totalTime);
+  }, 1000);
   $("#startButton").attr("style", "visibility:hidden");
   startQuiz();
 });
-var questionArray = ["First Question", "Second Question", "Third Question"];
+var questionArray = [
+  "First Question",
+  "Second Question",
+  "Third Question",
+  "Fourth Question",
+  "Fifth Question",
+];
 var answerArray = [
-  [1, 2, 3, 4],
-  [5, 6, 7, 8],
-  [9, 10, 11, 12],
-  [13, 14, 15, 16],
+  { "The wofj owfjo": true, op: false, yo: false, omk: false },
+  { pop: false, ye: true, lp: false, mm: false },
 ];
 
-console.log(answerArray[0]);
-
-function questionFunction(value) {
-  console.log(value);
-}
-
+questionNumber = 0;
 function startQuiz() {
   $("#quizBox").append("<h1>" + questionArray[0] + "</h1>");
   var answerButtonHolder = $("<div>");
   var button1 = $("<button>");
-  button1.attr("id", "button1");
+  button1.attr("id", "button0");
   var button2 = $("<button>");
-  button2.attr("id", "button2");
+  button2.attr("id", "button1");
   var button3 = $("<button>");
-  button3.attr("id", "button3");
+  button3.attr("id", "button2");
   var button4 = $("<button>");
-  button4.attr("id", "button4");
+  button4.attr("id", "button3");
   answerButtonHolder.attr("class", "answerButton");
   $("#quizBox").append(answerButtonHolder);
   $(".answerButton").append(button1);
   $(".answerButton").append(button2);
   $(".answerButton").append(button3);
   $(".answerButton").append(button4);
+  for (var i = 0; i < 4; i++) {
+    stringI = "#button" + String(i);
+    $(stringI).text(Object.keys(answerArray[questionNumber])[i]);
+  }
+  questionNumber++;
 }
 
+$("#quizBox").on("click", "#button0", function () {
+  selectedAnswer = $(button0).text();
+});
+
+$("#quizBox").on("click", "#button1", function () {
+  selectedAnswer = $(button1).text();
+});
+
+$("#quizBox").on("click", "#button2", function () {
+  selectedAnswer = $(button2).text();
+});
+
+$("#quizBox").on("click", "#button3", function () {
+  selectedAnswer = $(button3).text();
+});
+
 $("#quizBox").on("click", ".answerButton", function () {
+  CheckCorrect();
   NextQuestion();
 });
 
-var questionNumber = 1;
 function NextQuestion() {
-  console.log(questionNumber);
   if (questionNumber === questionArray.length) {
     return;
   }
   $("h1").text(questionArray[questionNumber]);
+
+  for (var i = 0; i < 4; i++) {
+    stringI = "#button" + String(i);
+    $(stringI).text(Object.keys(answerArray[questionNumber])[i]);
+  }
   questionNumber++;
+}
+
+function CheckCorrect() {
+  if (answerArray[questionNumber - 1][selectedAnswer]) {
+    alert("You are correct");
+  }
 }
