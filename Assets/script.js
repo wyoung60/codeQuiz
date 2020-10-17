@@ -1,3 +1,15 @@
+var startButton = document.querySelector("#startButton");
+var timeDisplay = document.querySelector("#timeDisplay");
+var quizFramework = document.querySelector("#quizBox");
+var questionText = document.createElement("h1");
+var answerButtonFramework = document.createElement("div");
+var resetButton = document.createElement("button");
+var highScore = document.createElement("button");
+var startButtonReturn = document.createElement("button");
+var highScoreBoard = [];
+var submitButton = document.createElement("button");
+initialsInput = document.createElement("input");
+
 //First timer
 //Load Question
 //Third Buttons with answers
@@ -33,10 +45,15 @@ var answerArray = [
   { pop: false, ye: true, lp: false, mm: false },
 ];
 
-$("body").on("click", "#startButton", function () {
+startButton.addEventListener("click", function () {
+  console.log("Start Clicked");
+  beginQuiz();
+});
+
+function beginQuiz() {
   var quizTimer = setInterval(function () {
     totalTime--;
-    $("#timeDisplay").text(totalTime);
+    timeDisplay.textContent = totalTime;
 
     if (totalTime === 0) {
       clearInterval(quizTimer);
@@ -48,117 +65,167 @@ $("body").on("click", "#startButton", function () {
       showResult();
     }
   }, 1000);
-  $("#startButton").attr("style", "visibility:hidden");
   startQuiz();
-});
-
-function startQuiz() {
-  $("#startButton").remove();
-  $("#quizBox").append("<h1>" + questionArray[0] + "</h1>");
-  var answerButtonHolder = $("<div>");
-  var button1 = $("<button>");
-  button1.attr("id", "button0");
-  var button2 = $("<button>");
-  button2.attr("id", "button1");
-  var button3 = $("<button>");
-  button3.attr("id", "button2");
-  var button4 = $("<button>");
-  button4.attr("id", "button3");
-  answerButtonHolder.attr("class", "answerButton");
-  $("#quizBox").append(answerButtonHolder);
-  $(".answerButton").append(button1);
-  $(".answerButton").append(button2);
-  $(".answerButton").append(button3);
-  $(".answerButton").append(button4);
-  for (var i = 0; i < 4; i++) {
-    stringI = "#button" + String(i);
-    $(stringI).text(Object.keys(answerArray[questionNumber])[i]);
-  }
-  questionNumber++;
 }
 
-$("#quizBox").on("click", "#button0", function () {
-  selectedAnswer = $(button0).text();
-});
+function startQuiz() {
+  quizFramework.removeChild(startButton);
+  questionText.textContent = questionArray[0];
+  questionText.setAttribute("id", "questionText");
+  quizFramework.appendChild(questionText);
+  answerButtonFramework.setAttribute("class", "answerButtonDiv");
+  quizFramework.appendChild(answerButtonFramework);
+  for (var i = 0; i < 4; i++) {
+    var answerButtons = document.createElement("button");
+    answerButtons.textContent = Object.keys(answerArray[0])[i];
+    answerButtons.setAttribute("id", "button" + [i]);
+    answerButtonFramework.appendChild(answerButtons);
+  }
 
-$("#quizBox").on("click", "#button1", function () {
-  selectedAnswer = $(button1).text();
-});
+  questionNumber++;
+  grabAnswer();
+}
 
-$("#quizBox").on("click", "#button2", function () {
-  selectedAnswer = $(button2).text();
-});
+function grabAnswer() {
+  var selectedAnswer0 = document.querySelector("#button0");
+  var selectedAnswer1 = document.querySelector("#button1");
+  var selectedAnswer2 = document.querySelector("#button2");
+  var selectedAnswer3 = document.querySelector("#button3");
 
-$("#quizBox").on("click", "#button3", function () {
-  selectedAnswer = $(button3).text();
-});
+  selectedAnswer0.addEventListener("click", function () {
+    var userAnswer = button0.textContent;
+    if (answerArray[questionNumber - 1][userAnswer]) {
+      userScore = userScore + 5;
+      correctAnswer++;
+    } else {
+      wrongAnswer++;
+    }
 
-$("#quizBox").on("click", ".answerButton", function () {
-  CheckCorrect();
-  NextQuestion();
-});
+    // CheckCorrect();
+    NextQuestion();
+  });
+
+  selectedAnswer1.addEventListener("click", function () {
+    var userAnswer = button1.textContent;
+    if (answerArray[questionNumber - 1][userAnswer]) {
+      userScore = userScore + 5;
+      correctAnswer++;
+    } else {
+      wrongAnswer++;
+    }
+    // CheckCorrect();
+    NextQuestion();
+  });
+
+  selectedAnswer2.addEventListener("click", function () {
+    var userAnswer = button2.textContent;
+    if (answerArray[questionNumber - 1][userAnswer]) {
+      userScore = userScore + 5;
+      correctAnswer++;
+    } else {
+      wrongAnswer++;
+    }
+    NextQuestion();
+  });
+
+  selectedAnswer3.addEventListener("click", function () {
+    var userAnswer = button3.textContent;
+    if (answerArray[questionNumber - 1][userAnswer]) {
+      userScore = userScore + 5;
+      correctAnswer++;
+    } else {
+      wrongAnswer++;
+    }
+    NextQuestion();
+  });
+}
 
 function NextQuestion() {
+  var newQuestion = document.querySelector("#questionText");
+
   if (questionNumber === questionArray.length) {
     questionNumber++;
     return;
   }
-  $("h1").text(questionArray[questionNumber]);
+  newQuestion.textContent = questionArray[questionNumber];
 
   for (var i = 0; i < 4; i++) {
-    stringI = "#button" + String(i);
-    $(stringI).text(Object.keys(answerArray[questionNumber])[i]);
+    var newAnswer = document.querySelector("#button" + [i]);
+
+    newAnswer.textContent = Object.keys(answerArray[questionNumber])[i];
   }
   questionNumber++;
 }
 
-function CheckCorrect() {
-  if (answerArray[questionNumber - 1][selectedAnswer]) {
-    userScore = userScore + 5;
-    correctAnswer++;
-  } else {
-    wrongAnswer++;
-  }
-}
-
 function showResult() {
-  $("#timeDisplay").attr("style", "visibility:hidden");
-  $(".answerButton").remove();
-  var resultDisplay = $(
-    "<h3>" +
-      "Your total score was " +
-      userScore +
-      "</h3>" +
-      "<h3>" +
-      "Your total number correct was " +
-      correctAnswer +
-      "</h3>" +
-      "<h3>" +
-      "Your total number wrong was " +
-      wrongAnswer +
-      "</h3>"
-  );
-  $("body").append(resultDisplay);
-  resetButton = $("<button>");
-  resetButton.text("Reset Quiz");
-  resetButton.attr("id", "resetButton");
-  $("#quizBox").append(resetButton);
-  highScore = $("<button>");
-  highScore.text("High Score Board");
-  highScore.attr("id", "highScore");
-  $("#quizBox").append(highScore);
-}
-
-$("#quizBox").on("click", "#resetButton", function () {
-  $("#resetButton").remove();
-  $("#highScore").remove();
-  $("h1").remove();
-  $("h3").remove();
-  $("h2").attr("style", "visibility:visible");
-  var startButton = $("<button>");
-  startButton.text("Start");
-  startButton.attr("id", "startButton");
-  $("#quizBox").append(startButton);
-  questionNumber = 0;
   totalTime = 30;
+  questionNumber = 0;
+  timeDisplay.setAttribute("style", "visibility:hidden");
+  while (quizFramework.hasChildNodes()) {
+    while (answerButtonFramework.hasChildNodes()) {
+      answerButtonFramework.removeChild(answerButtonFramework.firstChild);
+    }
+    quizFramework.removeChild(quizFramework.firstChild);
+  }
+
+  var resultsDisplay = [];
+  for (var i = 0; i < 3; i++) {
+    resultsDisplay[i] = document.createElement("h3");
+    resultsDisplay[i].setAttribute("id", "result" + [i]);
+    quizFramework.appendChild(resultsDisplay[i]);
+  }
+  resultsDisplay[0].textContent = "Your total score was " + userScore;
+  // quizFramework.appendChild(resultsDisplay);
+  // quizFramework.appendChild(lineBreak);
+  resultsDisplay[1].textContent =
+    "Your total number correct was " + correctAnswer;
+  // quizFramework.appendChild(lineBreak);
+  // quizFramework.appendChild(resultsDisplay);
+  resultsDisplay[2].textContent = "Your total number wrong was " + wrongAnswer;
+  resetButton.textContent = "Reset";
+  resetButton.setAttribute("id", "resetQuiz");
+  quizFramework.appendChild(resetButton);
+  highScore.textContent = "High Score";
+  quizFramework.appendChild(highScore);
+  submitButton.textContent = "Submit";
+  submitButton.setAttribute("id", "submitButton");
+  quizFramework.appendChild(submitButton);
+  initialsInput.setAttribute("id", "initials");
+  initialsInput.setAttribute("type", "text");
+  initialsInput.setAttribute("placeholder", "Enter initials");
+  quizFramework.appendChild(initialsInput);
+  console.log("Before the click");
+
+  // return;
+}
+console.log("Main");
+resetButton.addEventListener("click", function () {
+  userScore = 0;
+  correctAnswer = 0;
+  wrongAnswer = 0;
+
+  while (quizFramework.hasChildNodes()) {
+    quizFramework.removeChild(quizFramework.firstChild);
+  }
+  // resetButton.remove();
+  // highScore.remove();
+  // resultsDisplay[0].remove();
+  // resultsDisplay[1].remove();
+  // resultsDisplay[2].remove();
+  timeDisplay.setAttribute("style", "visibility:visible");
+  timeDisplay.textContent = 30;
+  quizFramework.appendChild(startButton);
+  // return;
+  // document
+  //   .getElementById("startButton")
+  //   .addEventListener("click", function () {
+  //     console.log("startButton click");
+  //     beginQuiz();
+  //   });
+});
+
+highScore.addEventListener("click", function () {
+  for (var i = 0; i < highScoreBoard.length; i++) {
+    var initialDisplay = document.createElement("h2");
+  }
 });
