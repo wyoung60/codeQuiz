@@ -1,6 +1,8 @@
 var startButton = document.querySelector("#startButton");
 var timeDisplay = document.querySelector("#timeDisplay");
 var quizFramework = document.querySelector("#quizBox");
+var columnClear = document.querySelector(".col");
+var columnCreator = document.createElement("div");
 var questionText = document.createElement("h1");
 var answerButtonFramework = document.createElement("div");
 var resetButton = document.createElement("button");
@@ -28,15 +30,13 @@ if (userInitials === null) {
   }
   tempArray.push(tempString);
   userInitials = tempArray;
-
-  console.log(userInitials);
 }
 //First timera
 //Load Question
 //Third Buttons with answers
 //Fourth make them interchangable
 //Fifth Clean up
-var totalTime = 30;
+var totalTime = 1000;
 var userScore = 0;
 var correctAnswer = 0;
 var wrongAnswer = 0;
@@ -79,7 +79,6 @@ function beginQuiz() {
       clearInterval(quizTimer);
       showResult();
     }
-
     if (questionNumber === questionArray.length + 1) {
       clearInterval(quizTimer);
       showResult();
@@ -89,17 +88,27 @@ function beginQuiz() {
 }
 
 function startQuiz() {
-  quizFramework.removeChild(startButton);
+  while (quizFramework.hasChildNodes()) {
+    quizFramework.removeChild(quizFramework.firstChild);
+  }
+  var rowCreator = document.createElement("section");
+  rowCreator.setAttribute("class", "row");
   questionText.textContent = questionArray[0];
+  questionText.setAttribute("class", "col-12");
   questionText.setAttribute("id", "questionText");
-  quizFramework.appendChild(questionText);
-  answerButtonFramework.setAttribute("class", "answerButtonDiv");
-  quizFramework.appendChild(answerButtonFramework);
+  rowCreator.appendChild(questionText);
+  quizFramework.appendChild(rowCreator);
+  // // answerButtonFramework.setAttribute("class", "row");
+  // quizFramework.appendChild(answerButtonFramework);
   for (var i = 0; i < 4; i++) {
+    var rowCreator = document.createElement("section");
+    rowCreator.setAttribute("class", "row pt-2 justify-content-center");
+    quizFramework.appendChild(rowCreator);
     var answerButtons = document.createElement("button");
     answerButtons.textContent = Object.keys(answerArray[0])[i];
     answerButtons.setAttribute("id", "button" + [i]);
-    answerButtonFramework.appendChild(answerButtons);
+    answerButtons.setAttribute("class", "col-8 btn btn-secondary");
+    rowCreator.appendChild(answerButtons);
   }
 
   questionNumber++;
@@ -179,7 +188,7 @@ function NextQuestion() {
 
 function showResult() {
   questionNumber = 0;
-  timeDisplay.setAttribute("style", "visibility:hidden");
+  // timeDisplay.setAttribute("style", "visibility:hidden");
   while (quizFramework.hasChildNodes()) {
     while (answerButtonFramework.hasChildNodes()) {
       answerButtonFramework.removeChild(answerButtonFramework.firstChild);
@@ -188,31 +197,49 @@ function showResult() {
   }
 
   var resultsDisplay = [];
-  for (var i = 0; i < 3; i++) {
-    resultsDisplay[i] = document.createElement("h3");
-    resultsDisplay[i].setAttribute("id", "result" + [i]);
-    quizFramework.appendChild(resultsDisplay[i]);
+  for (var i = 0; i < 5; i++) {
+    var rowCreator = document.createElement("section");
+    rowCreator.setAttribute("class", "row justify-content-center pt-3");
+    quizFramework.appendChild(rowCreator);
+    if (i < 2) {
+      resultsDisplay[i] = document.createElement("h3");
+      resultsDisplay[i].setAttribute("id", "result" + [i]);
+      rowCreator.appendChild(resultsDisplay[i]);
+    } else if (i === 2) {
+      resetButton.textContent = "Reset";
+      resetButton.setAttribute("class", "btn btn-secondary");
+      rowCreator.appendChild(resetButton);
+      var columnCreator = document.createElement("div");
+      columnCreator.setAttribute("class", "col-1");
+      rowCreator.appendChild(columnCreator);
+      highScore.textContent = "High Score";
+      highScore.setAttribute("class", "btn btn-secondary");
+      rowCreator.appendChild(highScore);
+    } else if (i === 3) {
+      initialsInput.setAttribute("id", "initials");
+      initialsInput.setAttribute("type", "text");
+      initialsInput.setAttribute("placeholder", "Enter initials");
+      initialsInput.setAttribute("style", "text-align: center");
+      rowCreator.appendChild(initialsInput);
+    } else if (i === 4) {
+      submitButton.textContent = "Submit";
+      submitButton.setAttribute("class", "btn btn-secondary");
+      rowCreator.appendChild(submitButton);
+    }
   }
-  resultsDisplay[0].textContent = "Your total score was " + userScore;
+  // for (var i = 0; i < 3; i++) {
+  //   resultsDisplay[i] = document.createElement("h3");
+  //   resultsDisplay[i].setAttribute("id", "result" + [i]);
+  //   quizFramework.appendChild(resultsDisplay[i]);
+  // }
+
   // quizFramework.appendChild(resultsDisplay);
   // quizFramework.appendChild(lineBreak);
-  resultsDisplay[1].textContent =
+  resultsDisplay[0].textContent =
     "Your total number correct was " + correctAnswer;
   // quizFramework.appendChild(lineBreak);
   // quizFramework.appendChild(resultsDisplay);
-  resultsDisplay[2].textContent = "Your total number wrong was " + wrongAnswer;
-  resetButton.textContent = "Reset";
-  resetButton.setAttribute("id", "resetQuiz");
-  quizFramework.appendChild(resetButton);
-  highScore.textContent = "High Score";
-  quizFramework.appendChild(highScore);
-  submitButton.textContent = "Submit";
-  submitButton.setAttribute("id", "submitButton");
-  quizFramework.appendChild(submitButton);
-  initialsInput.setAttribute("id", "initials");
-  initialsInput.setAttribute("type", "text");
-  initialsInput.setAttribute("placeholder", "Enter initials");
-  quizFramework.appendChild(initialsInput);
+  resultsDisplay[1].textContent = "Your total number wrong was " + wrongAnswer;
 
   // return;
 }
@@ -227,14 +254,13 @@ resetButton.addEventListener("click", function () {
   while (quizFramework.hasChildNodes()) {
     quizFramework.removeChild(quizFramework.firstChild);
   }
-  // resetButton.remove();
-  // highScore.remove();
-  // resultsDisplay[0].remove();
-  // resultsDisplay[1].remove();
-  // resultsDisplay[2].remove();
   timeDisplay.setAttribute("style", "visibility:visible");
   timeDisplay.textContent = 30;
-  quizFramework.appendChild(startButton);
+  var rowCreator = document.createElement("section");
+  rowCreator.setAttribute("class", "row justify-content-center");
+  quizFramework.appendChild(rowCreator);
+  rowCreator.appendChild(startButton);
+
   // return;
   // document
   //   .getElementById("startButton")
@@ -259,7 +285,7 @@ submitButton.addEventListener("click", function () {
 });
 
 highScore.addEventListener("click", function () {
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 2; i++) {
     document.getElementById("result" + [i]).remove();
   }
   for (var i = 0; i < userInitials.length; i++) {
