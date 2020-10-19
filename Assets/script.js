@@ -8,9 +8,30 @@ var highScore = document.createElement("button");
 var startButtonReturn = document.createElement("button");
 var highScoreBoard = [];
 var submitButton = document.createElement("button");
-initialsInput = document.createElement("input");
+var initialsInput = document.createElement("input");
+var userInitials = localStorage.getItem("initial");
 
-//First timer
+if (userInitials === null) {
+  var userInitials = [];
+} else {
+  userInitials = Array.from(userInitials);
+  var tempArray = [];
+  var tempString = "";
+  var tempArrayLocation = 0;
+  for (var i = 0; i < userInitials.length; i++) {
+    if (userInitials[i] === ",") {
+      tempArray.push(tempString);
+      tempString = "";
+    } else {
+      tempString = tempString + userInitials[i];
+    }
+  }
+  tempArray.push(tempString);
+  userInitials = tempArray;
+
+  console.log(userInitials);
+}
+//First timera
 //Load Question
 //Third Buttons with answers
 //Fourth make them interchangable
@@ -46,7 +67,6 @@ var answerArray = [
 ];
 
 startButton.addEventListener("click", function () {
-  console.log("Start Clicked");
   beginQuiz();
 });
 
@@ -158,7 +178,6 @@ function NextQuestion() {
 }
 
 function showResult() {
-  totalTime = 30;
   questionNumber = 0;
   timeDisplay.setAttribute("style", "visibility:hidden");
   while (quizFramework.hasChildNodes()) {
@@ -194,16 +213,17 @@ function showResult() {
   initialsInput.setAttribute("type", "text");
   initialsInput.setAttribute("placeholder", "Enter initials");
   quizFramework.appendChild(initialsInput);
-  console.log("Before the click");
 
   // return;
 }
-console.log("Main");
+
 resetButton.addEventListener("click", function () {
+  totalTime = 30;
   userScore = 0;
   correctAnswer = 0;
   wrongAnswer = 0;
-
+  submitButton.disabled = false;
+  initialsInput.value = initialsInput.defaultValue;
   while (quizFramework.hasChildNodes()) {
     quizFramework.removeChild(quizFramework.firstChild);
   }
@@ -222,10 +242,35 @@ resetButton.addEventListener("click", function () {
   //     console.log("startButton click");
   //     beginQuiz();
   //   });
+  initialsInput.setAttribute("style", "visibility:visible");
+  submitButton.setAttribute("style", "visibility:visible");
+});
+
+submitButton.addEventListener("click", function () {
+  if (initialsInput.value === "") {
+    return;
+  } else {
+    userInitials.push(initialsInput.value);
+    userInitials.push(String(totalTime));
+    localStorage.setItem("initial", userInitials);
+    initialsInput.setAttribute("style", "visibility:hidden");
+    submitButton.setAttribute("style", "visibility:hidden");
+  }
 });
 
 highScore.addEventListener("click", function () {
-  for (var i = 0; i < highScoreBoard.length; i++) {
+  for (var i = 0; i < 3; i++) {
+    document.getElementById("result" + [i]).remove();
+  }
+  for (var i = 0; i < userInitials.length; i++) {
+    console.log("Here");
     var initialDisplay = document.createElement("h2");
+
+    initialDisplay.textContent = userInitials[i];
+    i++;
+    var scoreDisplay = document.createElement("h2");
+    scoreDisplay.textContent = userInitials[i];
+    quizFramework.appendChild(initialDisplay);
+    quizFramework.appendChild(scoreDisplay);
   }
 });
