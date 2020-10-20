@@ -85,8 +85,8 @@ function beginQuiz() {
       clearInterval(quizTimer);
       showResult();
     }
-    //Stops countdown if all questions are answered
-    if (questionNumber === questionArray.length) {
+    //Stops countdown if all questions are answered.  Plus one needed to keep timer moving on last question.
+    if (questionNumber === questionArray.length + 1) {
       clearInterval(quizTimer);
       return;
     }
@@ -145,6 +145,8 @@ function grabAnswer() {
     }
     //If all questions are answered moves to results function
     if (questionNumber === questionArray.length) {
+      //Needed to stop timer
+      questionNumber++;
       //Ensure proper score is displayed
       timeDisplay.textContent = "Score: " + totalTime;
       showResult();
@@ -164,6 +166,7 @@ function grabAnswer() {
       totalTime -= 10;
     }
     if (questionNumber === questionArray.length) {
+      questionNumber++;
       timeDisplay.textContent = "Score: " + totalTime;
       showResult();
       return;
@@ -182,6 +185,7 @@ function grabAnswer() {
       totalTime -= 10;
     }
     if (questionNumber === questionArray.length) {
+      questionNumber++;
       timeDisplay.textContent = "Score: " + totalTime;
       showResult();
       return;
@@ -200,6 +204,7 @@ function grabAnswer() {
       totalTime -= 10;
     }
     if (questionNumber === questionArray.length) {
+      questionNumber++;
       timeDisplay.textContent = "Score: " + totalTime;
       showResult();
       return;
